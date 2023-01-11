@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append('../')
-from abscr import im
+
 from abscr.abscr.dataload.data_loader import DataLoader
 
 
