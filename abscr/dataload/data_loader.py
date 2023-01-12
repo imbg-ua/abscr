@@ -1,3 +1,6 @@
+from requests import request
+
+
 class DataLoader:
     def __init__(self) -> None:
         self.test_data_url = 'https://git.github.com/asdas/asda/test_example.pkl'
@@ -7,5 +10,4 @@ class DataLoader:
         '''
         Download a simple dataset
         '''
-        # request.get(self.test_data_url)
-        return
+        return request('GET', self.test_data_url)
