@@ -1,9 +1,11 @@
 subpackages = [
+    'ome',
     'dataload',
     'analysis',
     'prepocessing',
     'segmentation',
-    'util'
+    'util',
+    
 ]
 
 import lazy_loader as lazy
