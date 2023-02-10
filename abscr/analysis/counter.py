@@ -6,61 +6,40 @@ import numpy as np
 from typing import Union
 from cellpose import utils
 
-
 class CellCounter:
     def __init__(self) -> None:
         pass
-
-    def count_cells(self, epithelial_masks=None, immune_masks=None) -> Union[tuple, int]:
-        # TODO: better error handling
-        epithelial_count = None
-        if isinstance(epithelial_masks, np.ndarray):
-            epithelial_count = len(utils.outlines_list(epithelial_masks)) 
-        elif isinstance(epithelial_masks, str):          
-            ext_name = os.path.splitext(os.path.basename(epithelial_masks))[1]
-            if ext_name == '.txt':
-                epithelial_count = len(open(epithelial_masks).readlines())
-            elif ext_name == '.npy':
-                dat = np.load(epithelial_masks, allow_pickle=True).item()
-                outlines = utils.outlines_list(dat['masks'])
-                epithelial_count = len(outlines)
-            else:
-                logging.error(f'{epithelial_masks} has incorrect file format')
-                raise ValueError('Incorrect file format. Either a .txt or a .npy file with masks must be passed')
-                
+    
+    def count_cells_buccal(self, buccal_segmentation: 'BuccalSegmentation'):
+        result = self.count_cells_from_masks(buccal_segmentation.epithelial_masks, buccal_segmentation.immune_masks)
         
-        immune_count = None
-        if isinstance(immune_masks, np.ndarray):
-            immune_count = len(utils.outlines_list(immune_masks)) 
-        elif isinstance(immune_masks, str):          
-            ext_name = os.path.splitext(os.path.basename(immune_masks))[1]
-            if ext_name == '.txt':
-                immune_count = len(open(immune_masks).readlines())
-            elif ext_name == '.npy':
-                dat = np.load(immune_masks, allow_pickle=True).item()
-                outlines = utils.outlines_list(dat['masks'])
-                immune_count = len(outlines)
-            else:
-                logging.error(f'{immune_masks} has incorrect file format')
-                raise ValueError('Incorrect file format. Either a .txt or a .npy file with masks must be passed')
+        # immune cells segmentation is yet to be implemented
+        dummy_result = (result[0], np.clip(np.round(np.random.normal(0.21 * result[0], 0.07 * result[0])).astype(int), 0, None))
         
-        # dummy
-        # note that epithelial_count must be not None here
-        if immune_masks is not None:
-            immune_count = np.clip(np.round(np.random.normal(0.21 * epithelial_count, 0.07 * epithelial_count)).astype(int), 0, None)
+        return dummy_result
         
-        if epithelial_count is not None and immune_count is not None:
-            # print(f'Epithelial cells count: {epithelial_count}\nImmune cells count: {immune_count}')
-            return (epithelial_count, immune_count)
-        elif epithelial_count is not None:
-            return epithelial_count
-        elif immune_count is not None:
-            return immune_count
+    def count_cells_from_masks(self, *masks) -> Union[tuple, int]:
+        result_counts = []
+        
+        for masks_array in masks:
+            cells_count = None
+            if isinstance(masks_array, np.ndarray):
+                cells_count = len(utils.outlines_list(masks_array)) 
+            elif isinstance(masks_array, str):          
+                ext_name = os.path.splitext(os.path.basename(masks_array))[1]
+                if ext_name == '.txt':
+                    cells_count = len(open(masks_array).readlines())
+                elif ext_name == '.npy':
+                    dat = np.load(masks_array, allow_pickle=True).item()
+                    outlines = utils.outlines_list(dat['masks'])
+                    cells_count = len(outlines)
+                else:
+                    logging.error(f'{masks_array} has incorrect file format')
+                    raise ValueError('Incorrect file format. Either a .txt or a .npy file with masks must be passed')
+                    
+            result_counts.append(cells_count)
+                            
+        if len(result_counts) == 1:
+            return result_counts[0]
         else:
-            raise ValueError("Bad arguments. Couldn't count the cells")
-            
-        
-            
-                
-                
-        
+            return tuple(result_counts)
