@@ -2,7 +2,7 @@
 A python library for cell recognition.
 # Work in progress . . .
 
-## Omero
+## Install
 
 - Download library from https://github.com/imbg-ua/abscr
 - Unzip 
@@ -16,3 +16,10 @@ A python library for cell recognition.
 - `conda develop .`
 
 Bingo!
+
+## GPU support with pure conda
+
+- Use "environment_explicit.yml" file to create conda environment
+- `conda env create -n cenv --file environment_explicit.yml`
+- `conda develop .`
+- `python -m ipykernel install --user --name=cenv`
