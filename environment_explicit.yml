@@ -1,4 +1,4 @@
-name: base
+name: cenv
 channels:
   - pytorch
   - nvidia
@@ -213,4 +213,3 @@ dependencies:
       - pyparsing==3.0.9
       - scipy==1.10.0
       - tifffile==2023.2.3
-prefix: /lustre/scratch126/casm/team268im/af24/miniconda3/envs/abscr
