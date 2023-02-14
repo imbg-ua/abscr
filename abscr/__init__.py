@@ -1,5 +1,5 @@
 subpackages = [
-    'ome',
+    'omero_connection',
     'dataload',
     'analysis',
     'prepocessing',
