@@ -10,13 +10,13 @@ class CellCounter:
     def __init__(self) -> None:
         pass
     
-    def count_cells_buccal(self, buccal_segmentation: 'BuccalSegmentation'):
-        result = self.count_cells_from_masks(buccal_segmentation.epithelial_masks, buccal_segmentation.immune_masks)
+    def count_cells_buccal(self, buccal_swab_segm: 'BuccalSwabSegmentation'):
+        result = self.count_cells_from_masks(buccal_swab_segm.epithelial_masks, buccal_swab_segm.immune_masks)
         
         # immune cells segmentation is yet to be implemented
-        dummy_result = (result[0], np.clip(np.round(np.random.normal(0.21 * result[0], 0.07 * result[0])).astype(int), 0, None))
+        # dummy_result = (result[0], np.clip(np.round(np.random.normal(0.21 * result[0], 0.07 * result[0])).astype(int), 0, None))
         
-        return dummy_result
+        return result
         
     def count_cells_from_masks(self, *masks) -> Union[tuple, int]:
         result_counts = []
