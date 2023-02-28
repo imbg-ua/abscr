@@ -14,8 +14,8 @@ dependencies:
   - blas=1.0=mkl
   - brotlipy=0.7.0=py310h7f8727e_1002
   - bzip2=1.0.8=h7b6447c_0
-  - ca-certificates=2023.01.10=h06a4308_0
-  - certifi=2022.12.7=py310h06a4308_0
+  - ca-certificates=2022.12.7=ha878542_0
+  - certifi=2022.12.7=pyhd8ed1ab_0
   - cffi=1.15.1=py310h5eee18b_3
   - chardet=4.0.0=py310h06a4308_1003
   - charset-normalizer=2.0.4=pyhd3eb1b0_0
@@ -131,9 +131,9 @@ dependencies:
   - nsight-compute=2022.4.1.6=0
   - numpy=1.23.5=py310hd5efca6_0
   - numpy-base=1.23.5=py310h8e6c178_0
-  - omero-py=5.13.1=pyhd8ed1ab_0
+  - omero-py=5.11.2=pyhd8ed1ab_0
   - openh264=2.1.1=h4ff587b_0
-  - openssl=1.1.1s=h7f8727e_0
+  - openssl=1.1.1t=h7f8727e_0
   - packaging=22.0=py310h06a4308_0
   - parso=0.8.3=pyhd3eb1b0_0
   - patch=2.7.6=h7b6447c_1001
@@ -197,11 +197,15 @@ dependencies:
   - zstandard=0.18.0=py310h5eee18b_0
   - zstd=1.5.2=ha4553b6_0
   - pip:
+      - asciitree==0.3.3
       - cellpose==2.2
       - contourpy==1.0.7
       - cycler==0.11.0
+      - ezomero==1.2.1
+      - fasteners==0.18
       - fastremap==1.13.4
       - fonttools==4.38.0
+      - fsspec==2022.10.0
       - imagecodecs==2023.1.23
       - kiwisolver==1.4.4
       - lazy-loader==0.1
@@ -209,7 +213,10 @@ dependencies:
       - matplotlib==3.6.3
       - natsort==8.2.0
       - numba==0.56.4
+      - numcodecs==0.11.0
       - opencv-python-headless==4.7.0.68
       - pyparsing==3.0.9
       - scipy==1.10.0
       - tifffile==2023.2.3
+      - tiffslide==2.1.0
+      - zarr==2.14.1
