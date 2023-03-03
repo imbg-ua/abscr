@@ -71,14 +71,20 @@ class Segmentor:
                     channels_epithelial=[0, 0], invert_epithelial=True, model_type_epithelial='cyto',
                     diameter_immune=None, flow_threshold_immune=None, cellprob_threshold_immune=None,
                     channels_immune=None, invert_immune=None, model_type_immune=None,
-                    batch_size=8, save_png=True, plot_segm=False, savedir=None):
+                    batch_size=8, save_png=True, plot_segm=False, savedir=None, basename=None):
         if isinstance(image, np.ndarray):
             image_array = image
-            basename = ''
+            if basename is None and save_png:
+                raise ValueError('When passing an image as np.ndarray, the file basename must be specified.')
+                return
+            basename = basename
         else:
             PIL_image = self.check_image(image)
             image_array = np.asarray(PIL_image)
-            basename = os.path.splitext(os.path.basename(PIL_image.filename))[0]
+            if basename is not None:
+                basename = basename
+            else:
+                basename = os.path.splitext(os.path.basename(PIL_image.filename))[0]
         
         
         epithelial_segmentation = self.predict_epithelial(image_array, diameter=diameter_epithelial,
@@ -103,7 +109,7 @@ class Segmentor:
     
     def plot_segmentation(self, image, masks_array, basename=None, save_png=False, savedir=None, plot_segm=True):
         if not (save_png or plot_segm):
-            pass
+            return
 
         if isinstance(image, np.ndarray):
             image_array = image
