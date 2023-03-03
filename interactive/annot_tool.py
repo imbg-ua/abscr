@@ -69,7 +69,7 @@ app.layout = html.Div([
 def show_string(json_data):
     box_coordinates = parse_jsonstring_rectangle(json_data)
     df = pd.DataFrame(box_coordinates, columns=list_columns[:-1])
-    # df['class'] = 'empty'
+    df['class'] = 'empty'
     return df.to_dict('records')
 
 
