@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import PIL
 from cellpose import models, core, io, plot, utils
 
-
 class SegmentationData:
     def __init__(self, masks=None, flows=None, styles=None, diams=None):
         self.masks = masks
@@ -34,7 +33,8 @@ class Segmentor:
         logging.info(f'Available models:\n{self.models}')
         pass
     
-    def check_image(self, image):
+    @staticmethod
+    def check_image(image):
         if isinstance(image, PIL.Image.Image):
             return image
         else:
@@ -45,7 +45,7 @@ class Segmentor:
                 return
             return PIL_image
             
-    def predict_epithelial(self, image, diameter=100, flow_threshold=0.4, cellprob_threshold=0.0,
+    def predict_epithelial(self, image, diameter=30, flow_threshold=0.4, cellprob_threshold=0.0,
                            channels=[0, 0], invert=True, model_type='cyto', batch_size=8):
         if isinstance(image, np.ndarray):
             image_array = image
@@ -67,7 +67,7 @@ class Segmentor:
                        channels, invert, model_type, batch_size):
         pass
 
-    def predict_all(self, image, diameter_epithelial=100, flow_threshold_epithelial=0.4, cellprob_threshold_epithelial=0.0,
+    def predict_all(self, image, diameter_epithelial=30, flow_threshold_epithelial=0.4, cellprob_threshold_epithelial=0.0,
                     channels_epithelial=[0, 0], invert_epithelial=True, model_type_epithelial='cyto',
                     diameter_immune=None, flow_threshold_immune=None, cellprob_threshold_immune=None,
                     channels_immune=None, invert_immune=None, model_type_immune=None,
