@@ -417,6 +417,8 @@ def higlight_row(string):
     When hovering hover label, highlight corresponding row in table,
     using label column.
     """
+    if 'customdata' not in string["points"][0].keys():
+        return
     index = string["points"][0]["customdata"]
     return [
         {
