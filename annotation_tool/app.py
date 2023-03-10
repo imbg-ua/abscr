@@ -1,5 +1,5 @@
 import dash
-import dash_table
+from dash import dash_table
 from dash_table.Format import Format
 from dash.dependencies import Input, Output, State
 from dash import html
@@ -85,7 +85,7 @@ def image_with_contour(img, active_labels, data_table, active_columns, color_col
     # First we get the values from the selected datatable column and use them to define a colormap
     values = np.array(table[color_column].values)
     norm = mpl.colors.Normalize(vmin=values.min(), vmax=values.max())
-    cmap = mpl.cm.get_cmap("plasma")
+    cmap = mpl.colormaps["plasma"]
 
     # Now we convert our background image to a greyscale bytestring that is very small and can be transferred very
     # efficiently over the network. We do not want any hover-information for this image, so we disable it
@@ -172,77 +172,6 @@ def image_with_contour(img, active_labels, data_table, active_columns, color_col
 
     return fig
 
-
-# Define Modal
-# with open("assets/modal.md", "r") as f:
-#     howto_md = f.read()
-
-# modal_overlay = dbc.Modal(
-#     [
-#         dbc.ModalBody(html.Div([dcc.Markdown(howto_md)], id="howto-md")),
-#         dbc.ModalFooter(dbc.Button(
-#             "Close", id="howto-close", className="howto-bn")),
-
-
-#     ],
-#     id="modal",
-#     size="lg",
-# )
-
-# Buttons
-button_gh = dbc.Button(
-    "Learn more",
-    id="howto-open",
-    outline=True,
-    color="secondary",
-    # Turn off lowercase transformation for class .button in stylesheet
-    style={"textTransform": "none"},
-)
-
-
-# Define Header Layout
-# header = dbc.Navbar(
-#     dbc.Container(
-#         [
-#             dbc.Row(
-#                 [
-#                     dbc.Col(
-#                         html.A(
-#                             html.Img(
-#                                 src=app.get_asset_url("dash-logo-new.png"),
-#                                 height="30px",
-#                             ),
-#                             href="https://plotly.com/dash/",
-#                         )
-#                     ),
-#                     dbc.Col(dbc.NavbarBrand("Object Properties App")),
-#                     modal_overlay,
-#                 ],
-#                 align="center",
-#             ),
-#             dbc.Row(
-#                 dbc.Col(
-#                     [
-#                         dbc.NavbarToggler(id="navbar-toggler"),
-#                         dbc.Collapse(
-#                             dbc.Nav(
-#                                 [dbc.NavItem(button_gh)],
-#                                 className="ml-auto",
-#                                 navbar=True,
-#                             ),
-#                             id="navbar-collapse",
-#                             navbar=True,
-#                         ),
-#                     ]
-#                 ),
-#                 align="center",
-#             ),
-#         ],
-#         fluid=True,
-#     ),
-#     color="dark",
-#     dark=True,
-# )
 
 # Color selector dropdown
 color_drop = dcc.Dropdown(
