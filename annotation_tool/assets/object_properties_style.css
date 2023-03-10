@@ -5,7 +5,12 @@ override the settings in the dash bootstrap stylesheet */
 }
 
 .card {
-    margin-top: 1em;
+    margin: 0em;
+    padding: 0;
+
+}
+.card-body{
+    padding: 0em;
 }
 
 #howto-md img {

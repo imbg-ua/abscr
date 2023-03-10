@@ -32,7 +32,8 @@ filename = (
     "data/020_Buccal_05.04.2022_small.jpeg"
 )
 
-img = io.imread(filename, as_gray=True)[:800:2, :1800:2]
+offset = 500
+img = io.imread(filename, as_gray=True)[offset:800+offset, offset:1800+offset]
 label_array = measure.label(img < filters.threshold_otsu(img))
 current_labels = np.unique(label_array)[np.nonzero(np.unique(label_array))]
 # Compute and store properties of the labeled image
@@ -47,6 +48,8 @@ prop_table = measure.regionprops_table(
     label_array, intensity_image=img, properties=prop_names
 )
 table = pd.DataFrame(prop_table)
+# remove very small objects
+table = table.query('area > 75')
 # Format the Table columns
 columns = [
     {"name": label_name, "id": label_name, "selectable": True}
@@ -203,15 +206,18 @@ image_card = dbc.Card(
                         children=html.P([
                             'Upload image',
                         ]),
+                        className='mr-2 btn btn-primary',
                         style={
                             'width': '100%',
-                            'height': '60px',
-                            'lineHeight': '60px',
+                            # 'height': '60px',
+                            # 'lineHeight': '60px',
                             'borderWidth': '1px',
-                            'borderStyle': 'dashed',
+                            'borderStyle': 'solid',
                             'borderRadius': '5px',
                             'textAlign': 'center',
-                            'margin': '0px'
+                            # 'margin': '5px',
+                            'color': 'white',
+                            # 'background-color': '#0d6efd'
                         },
                         multiple=False
                     ),
@@ -223,17 +229,20 @@ image_card = dbc.Card(
                         children=html.P([
                             'Upload outlines txt',
                         ]),
+                        className='mr-2 btn btn-primary',
                         style={
                             'width': '100%',
-                            'height': '60px',
-                            'lineHeight': '60px',
+                            # 'height': '60px',
+                            # 'lineHeight': '60px',
                             'borderWidth': '1px',
-                            'borderStyle': 'dashed',
+                            'borderStyle': 'solid',
                             'borderRadius': '5px',
                             'textAlign': 'center',
-                            'margin': '0px'
+                            # 'margin': '5px',
+                            'color': 'white',
+                            # 'background-color': '#0d6efd'
                         },
-                        multiple=False
+                        multiple=False  
                     ),
                     md=6),
             ])
