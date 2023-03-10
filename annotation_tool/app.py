@@ -16,6 +16,14 @@ import matplotlib as mpl
 import base64
 import json
 from utils import get_polygons_from_outlines
+import argparse
+
+
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('filename', action='store', type=str, help='Path to the image')
+
+args = parser.parse_args()
+# print(args.filename)
 
 
 logging.basicConfig(level=logging.INFO)
@@ -28,9 +36,11 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 # Read the image that will be segmented
-filename = (
-    "data/020_Buccal_05.04.2022_small.jpeg"
-)
+# filename = (
+#     "data/020_Buccal_05.04.2022_small.jpeg"
+# )
+
+filename = args.filename
 
 offset = 500
 img = io.imread(filename, as_gray=True)[offset:800+offset, offset:1800+offset]
@@ -242,7 +252,7 @@ image_card = dbc.Card(
                             'color': 'white',
                             # 'background-color': '#0d6efd'
                         },
-                        multiple=False  
+                        multiple=False
                     ),
                     md=6),
             ])
