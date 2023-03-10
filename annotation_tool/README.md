@@ -1,5 +1,7 @@
 # Dash-app image annotation tool
 
+![DEMO](Screenshot.png)
+
 ```
 pip install --upgrade pip
 pip install -r requirements.txt 
