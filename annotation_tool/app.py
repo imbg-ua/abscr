@@ -49,7 +49,7 @@ prop_table = measure.regionprops_table(
 )
 table = pd.DataFrame(prop_table)
 # remove very small objects
-# table = table.query('area > 75')
+table = table.query('area > 75')
 # Format the Table columns
 columns = [
     {"name": label_name, "id": label_name, "selectable": True}
@@ -506,6 +506,4 @@ def update_download_link(data, columns):
 
 
 if __name__ == "__main__":
-    host = '0.0.0.0'
-    port = 8050
-    app.run_server(debug=True, host=host, port=port)
+    app.run_server(debug=True)
