@@ -282,7 +282,7 @@ image_card = dbc.Card(
 
         # Download image button
         dbc.Button(
-            "Download image",
+            "Upload image",
             id="download-img-button",
             color="primary",
             className="mr-1",
@@ -340,14 +340,6 @@ image_card = dbc.Card(
 table_card = dbc.Card(
     [
         dbc.CardHeader(html.H2("Data Table")),
-
-        # Download table-data button
-        dbc.Button(
-            "Download Data",
-            id="download-button",
-            color="primary",
-            className="mr-1",
-        ),
         dbc.CardBody(
             dbc.Row(
                 dbc.Col(
@@ -360,10 +352,6 @@ table_card = dbc.Card(
                                 col: "Select columns with the checkbox to include them in the hover info of the image."
                                 for col in table.columns
                             },
-                            style_header={
-                                "textDecoration": "underline",
-                                "textDecorationStyle": "dotted",
-                            },
                             tooltip_delay=0,
                             tooltip_duration=None,
                             filter_action="native",
@@ -372,11 +360,37 @@ table_card = dbc.Card(
                             selected_columns=initial_columns,
                             style_table={"overflowY": "scroll"},
                             fixed_rows={"headers": True, "data": 0},
-                            style_cell={"width": "85px"},
+                            style_cell={"width": "1em"},
                         ),
                         html.Div(id="row", hidden=True, children=None),
-                    ],
 
+                        dbc.CardFooter(
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        "Download statitistics as csv file:"
+                                    ),
+                                    dbc.Button(
+                                        "Download Data",
+                                        id="download-button",
+                                        color="primary",
+                                        className="mr-2",
+                                        style={
+                                            'width': '100%',
+                                            # 'height': '60px',
+                                            # 'lineHeight': '60px',
+                                            'borderWidth': '1px',
+                                            # 'borderStyle': 'dashed',
+                                            'borderRadius': '5px',
+                                            'textAlign': 'center',
+                                            'margin': '0px'
+                                        },
+                                    ),
+                                ],
+                                align="center",
+                            ),
+                        ),
+                    ],
                 )
             )
         ),
@@ -412,39 +426,6 @@ def update_output(contents, filename):
         ])
     else:
         return None
-    
-
-
-# # Load image button handler
-# # load an image and update graph with
-# @app.callback(Output('output-data-upload', 'children'),
-#               Input('upload-data', 'contents'),
-#               State('upload-data', 'filename'))
-# def update_output(contents, filename):
-#     if contents is not None:
-#         # read the content of the uploaded file
-
-#         content_type, content_string = contents.split(',')
-#         decoded = base64.b64decode(content_string)
-#         print(decoded)
-
-#         # save the file locally
-#         with open(filename, 'wb') as f:
-#             f.write(decoded)
-
-#         # process the uploaded file
-#         with open(filename, 'r') as f:
-#             data = f.readlines()
-
-#         # ...
-#         # return the result
-#         return html.Div([
-#             html.H5(filename),
-#             html.P("File content: "),
-#             html.P(data),
-#         ])
-#     else:
-#         return None
 
 
 app.layout = html.Div([
@@ -552,20 +533,6 @@ def update_download_link(data, columns):
     table = pd.DataFrame(data, columns=[c["name"] for c in columns])
     csv_file = get_table_csv(table)
     return csv_file
-
-
-# @app.callback(
-#     Output("modal", "is_open"),
-#     [Input("howto-open", "n_clicks"), Input("howto-close", "n_clicks")],
-#     [State("modal", "is_open")],
-# )
-# def toggle_modal(n1, n2, is_open):
-#     if n1 or n2:
-#         return not is_open
-#     return is_open
-
-
-
 
 
 def get_table_csv(table):
