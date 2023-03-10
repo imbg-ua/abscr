@@ -1,3 +1,4 @@
+import logging
 import dash
 from dash import dash_table
 from dash.dash_table.Format import Format
@@ -6,13 +7,18 @@ from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 import plotly.express as px
-
+from dash.exceptions import PreventUpdate
 import numpy as np
 from skimage import io, filters, measure, color, img_as_ubyte
 import PIL
 import pandas as pd
 import matplotlib as mpl
 import base64
+import json
+from utils import get_polygons_from_outlines
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 # Set up the app
@@ -188,32 +194,54 @@ image_card = dbc.Card(
     [
         dbc.CardHeader(html.H4("Explore object properties")),
 
-        dcc.Upload(
-            id='upload-data',
-            children=html.Div([
-                'Drag and Drop or Select Files',
-            ]),
-            style={
-                'width': '100%',
-                'height': '60px',
-                'lineHeight': '60px',
-                'borderWidth': '1px',
-                'borderStyle': 'dashed',
-                'borderRadius': '5px',
-                'textAlign': 'center',
-                'margin': '0px'
-            },
-            multiple=False
+        dbc.Container([
+            dbc.Row([
+                dbc.Col(
+                    # Download image button
+                    dcc.Upload(
+                        id="download-img-button",
+                        children=html.P([
+                            'Upload image',
+                        ]),
+                        style={
+                            'width': '100%',
+                            'height': '60px',
+                            'lineHeight': '60px',
+                            'borderWidth': '1px',
+                            'borderStyle': 'dashed',
+                            'borderRadius': '5px',
+                            'textAlign': 'center',
+                            'margin': '0px'
+                        },
+                        multiple=False
+                    ),
+                    md=6
+                ),
+                dbc.Col(
+                    dcc.Upload(
+                        id='upload-outlines',
+                        children=html.P([
+                            'Upload outlines txt',
+                        ]),
+                        style={
+                            'width': '100%',
+                            'height': '60px',
+                            'lineHeight': '60px',
+                            'borderWidth': '1px',
+                            'borderStyle': 'dashed',
+                            'borderRadius': '5px',
+                            'textAlign': 'center',
+                            'margin': '0px'
+                        },
+                        multiple=False
+                    ),
+                    md=6),
+            ])
+        ],
+            fluid=True,
         ),
-        html.Div(id='output-data-upload'),
 
-        # Download image button
-        dbc.Button(
-            "Upload image",
-            id="download-img-button",
-            color="primary",
-            className="mr-1",
-        ),
+        html.Div(id='output-data-upload'),
 
         dbc.CardBody(
             dbc.Row(
@@ -285,7 +313,7 @@ table_card = dbc.Card(
                             row_deletable=True,
                             column_selectable="multi",
                             selected_columns=initial_columns,
-                            style_table={"overflowY": "scroll"},
+                            # style_table={"overflowY": "scroll"},
                             fixed_rows={"headers": True, "data": 0},
                             style_cell={"width": "1em"},
                         ),
@@ -326,8 +354,8 @@ table_card = dbc.Card(
 
 
 @app.callback(Output('output-data-upload', 'children'),
-              Input('upload-data', 'contents'),
-              State('upload-data', 'filename'))
+              Input('upload-outlines', 'contents'),
+              State('upload-outlines', 'filename'))
 def update_output(contents, filename):
     if contents is not None:
         # read the content of the uploaded file
@@ -342,6 +370,8 @@ def update_output(contents, filename):
         # process the uploaded file
         with open(filename, 'r') as f:
             data = f.readlines()
+
+        polygons = get_polygons_from_outlines(data)
 
         # ...
         # return the result
@@ -413,6 +443,7 @@ def highlight_filter(indices, cell_index, data, active_columns, color_column, pr
 
     When the set of filtered labels changes, or when a row is deleted.
     """
+
     # If no color column is selected, open a popup to ask the user to select one.
     if color_column is None:
         return [dash.no_update, dash.no_update, True]
@@ -425,8 +456,13 @@ def highlight_filter(indices, cell_index, data, active_columns, color_column, pr
     )
 
     if cell_index and cell_index["row"] != previous_row:
+        ctx = dash.callback_context
+        input_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+        logging.info(input_id)
+
         label = filtered_labels[cell_index["row"]]
-        mask = (label_array == label).astype(np.float)
+        mask = (label_array == label).astype(float)
         contour = measure.find_contours(label_array == label, 0.5)[0]
         # We need to move the contour left and up by one, because
         # we padded the label array
@@ -436,7 +472,7 @@ def highlight_filter(indices, cell_index, data, active_columns, color_column, pr
             x=x,
             y=y,
             mode="lines",
-            showlegend=False,
+            showlegend=True,
             line=dict(color="#3D9970", width=6),
             hoverinfo="skip",
             opacity=0.9,
@@ -452,13 +488,12 @@ def highlight_filter(indices, cell_index, data, active_columns, color_column, pr
     State("table-line", "columns"),
 )
 def update_download_link(data, columns):
+    def get_table_csv(table):
+        return "data:text/csv;base64," + base64.b64encode(table.to_csv(index=False).encode()).decode()
+
     table = pd.DataFrame(data, columns=[c["name"] for c in columns])
     csv_file = get_table_csv(table)
     return csv_file
-
-
-def get_table_csv(table):
-    return "data:text/csv;base64," + base64.b64encode(table.to_csv(index=False).encode()).decode()
 
 
 if __name__ == "__main__":
