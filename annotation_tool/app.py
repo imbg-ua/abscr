@@ -1,6 +1,6 @@
 import dash
 from dash import dash_table
-from dash_table.Format import Format
+from dash.dash_table.Format import Format
 from dash.dependencies import Input, Output, State
 from dash import html
 from dash import dcc
@@ -26,7 +26,7 @@ filename = (
     "data/020_Buccal_05.04.2022_small.jpeg"
 )
 
-img = io.imread(filename, as_gray=True)[:800:2, :800:2]
+img = io.imread(filename, as_gray=True)[:800:2, :1800:2]
 label_array = measure.label(img < filters.threshold_otsu(img))
 current_labels = np.unique(label_array)[np.nonzero(np.unique(label_array))]
 # Compute and store properties of the labeled image
@@ -35,7 +35,6 @@ prop_names = [
     "area",
     "perimeter",
     "eccentricity",
-    # "euler_number",
     "mean_intensity",
 ]
 prop_table = measure.regionprops_table(
@@ -53,7 +52,7 @@ columns = [
         "format": Format(precision=precision),
         "selectable": True,
     }
-    for label_name, precision in zip(prop_names, (None, None, 4, 4, None, 3))
+    for label_name, precision in zip(prop_names, (None, None, 4, 4, 2))
 ]
 # Select the columns that are selected when the app starts
 initial_columns = ["label", "area"]
@@ -192,8 +191,7 @@ image_card = dbc.Card(
         dcc.Upload(
             id='upload-data',
             children=html.Div([
-                'Drag and Drop or ',
-                html.A('Select Files')
+                'Drag and Drop or Select Files',
             ]),
             style={
                 'width': '100%',
@@ -268,7 +266,7 @@ image_card = dbc.Card(
 
 table_card = dbc.Card(
     [
-        dbc.CardHeader(html.H2("Data Table")),
+        dbc.CardHeader(html.H4("Data Table")),
         dbc.CardBody(
             dbc.Row(
                 dbc.Col(
@@ -336,7 +334,6 @@ def update_output(contents, filename):
 
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
-        print(decoded)
 
         # save the file locally
         with open(filename, 'wb') as f:
@@ -349,26 +346,22 @@ def update_output(contents, filename):
         # ...
         # return the result
         return html.Div([
-            html.H5(filename),
-            html.P("File content: "),
-            html.P(data),
+            html.Pre(filename),
         ])
     else:
         return None
 
 
 app.layout = html.Div([
-    # Navbar
-    # header,
 
     # Image and table container
     dbc.Container([
         dbc.Row([
                 # left image column
-                dbc.Col(image_card, md=6),
+                dbc.Col(image_card, md=8),
 
                 # right tabke column
-                dbc.Col(table_card, md=6)])],
+                dbc.Col(table_card, md=4)])],
         fluid=True,
     ),
 ]
