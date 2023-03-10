@@ -26,7 +26,7 @@ args = parser.parse_args()
 # print(args.filename)
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 
 # Set up the app
@@ -481,7 +481,7 @@ def highlight_filter(indices, cell_index, data, active_columns, color_column, pr
         ctx = dash.callback_context
         input_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-        logging.info(input_id)
+        # logging.info(input_id)
 
         label = filtered_labels[cell_index["row"]]
         mask = (label_array == label).astype(float)
