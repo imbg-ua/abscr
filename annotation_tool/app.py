@@ -329,6 +329,7 @@ table_card = dbc.Card(
                             tooltip_delay=0,
                             tooltip_duration=None,
                             filter_action="native",
+                            sort_action='native',
                             row_deletable=True,
                             column_selectable="multi",
                             selected_columns=initial_columns,
