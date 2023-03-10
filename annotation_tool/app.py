@@ -93,7 +93,7 @@ def image_with_contour(img, active_labels, data_table, active_columns, color_col
     # First we get the values from the selected datatable column and use them to define a colormap
     values = np.array(table[color_column].values)
     norm = mpl.colors.Normalize(vmin=values.min(), vmax=values.max())
-    cmap = mpl.colormaps["plasma"]
+    cmap = mpl.colormaps['viridis']
 
     # Now we convert our background image to a greyscale bytestring that is very small and can be transferred very
     # efficiently over the network. We do not want any hover-information for this image, so we disable it
@@ -482,7 +482,7 @@ def highlight_filter(indices, cell_index, data, active_columns, color_column, pr
             y=y,
             mode="lines",
             showlegend=True,
-            line=dict(color="#3D9970", width=6),
+            line=dict(color="red", width=6),
             hoverinfo="skip",
             opacity=0.9,
         )
