@@ -82,9 +82,10 @@ class OmeroClient:
         # ----
         # allows saving changes to the object etc.
         # group_id = image_object.getDetails().group.id.val
-        # self.conn.SERVICE_OPTS.setOmeroGroup(group_id)
+
         self._keep_connection()
-        self.conn.SERVICE_OPTS.setOmeroGroup(group_id)
+        self.conn.setGroupForSession(group_id)
+        # self.conn.SERVICE_OPTS.setOmeroGroup(group_id)
 
     def get_image_cursor(self, image_id):
         self._keep_connection()
