@@ -206,6 +206,43 @@ class OmeroClient:
         roi.addShape(shape)
         # Save the ROI (saves any linked shapes too)
         return updateService.saveAndReturnObject(roi)
+    
+    def add_metadata(self, object_name, object_id, key_value_data):
+        """
+        object_name: "Project", "Dataset", "Image"
+        """
+        self._keep_connection()
+        map_ann = omero.gateway.MapAnnotationWrapper(self.conn)
+        namespace = omero.constants.metadata.NSCLIENTMAPANNOTATION
+        map_ann.setNs(namespace)
+        map_ann.setValue(key_value_data)
+        map_ann.save()
+        omero_object = self.conn.getObject(object_name, object_id)
+        omero_object.linkAnnotation(map_ann)
+        
+    def add_file_metadata(self, object_name, object_id, namespace, filename):
+        self._keep_connection()
+        file_ann = self.conn.createFileAnnfromLocalFile(filename, mimetype="text/plain", ns=namespace, desc=None)
+        omero_object = self.conn.getObject(object_name, object_id)
+        omero_object.linkAnnotation(file_ann)
+        
+    def delete_metadata(self, object_name, object_id, namespace=None):
+        """
+        namespace = omero.constants.metadata.NSCLIENTMAPANNOTATION
+        for the deletion of key-value pairs
+        """
+        self._keep_connection()
+        omero_object = self.conn.getObject(object_name, object_id)
+        
+        if namespace is None:
+            omero_annotations = omero_object.listAnnotations()
+        else:
+            omero_annotations = omero_object.listAnnotations(ns=namespace)
+        
+        to_delete = []
+        for ann in omero_annotations:
+            to_delete.append(ann.id)
+        self.conn.deleteObjects('Annotation', to_delete, wait=True)
 
     def close(self, *args):
         if self.conn and self.conn.isConnected():
