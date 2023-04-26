@@ -28,7 +28,8 @@ class CellCounter:
             elif isinstance(masks_array, str):          
                 ext_name = os.path.splitext(os.path.basename(masks_array))[1]
                 if ext_name == '.txt':
-                    cells_count = len(open(masks_array).readlines())
+                    with open(masks_array, 'r') as outlines_txt:
+                        cells_count = len(outlines_txt.readlines())
                 elif ext_name == '.npy':
                     dat = np.load(masks_array, allow_pickle=True).item()
                     outlines = utils.outlines_list(dat['masks'])
