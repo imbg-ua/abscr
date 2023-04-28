@@ -1,0 +1,7 @@
+This code defines a class `Preprocessor` with methods for scaling and cropping images. The class has an attribute `EPITHELIAL_CELL_DIAMETER` set to 60, which is the diameter of an epithelial cell in micrometers. 
+
+- `scale_image` takes an image and a scaling factor, and returns a tuple with the scaled image and the scaled epithelial cell diameter in pixels. The method first checks if the image is an instance of `TiffSlide` (a class for reading large TIFF files), and if so, it finds the best level to downsample the image to using the `get_best_level_for_downsample` method, and calculates the scaled cell diameter in pixels based on the specified factor or the default value of `EPITHELIAL_CELL_DIAMETER`. It then reads the region of the image at the specified level and returns the scaled image and cell diameter. If the image is a numpy array or a PIL image, the method resizes the image to the specified factor and returns the scaled image and cell diameter.
+
+- `crop_image` takes an image and the coordinates of a rectangular region to crop, and returns the cropped region as a PIL image. If the image is a `TiffSlide` object, the method also requires a level to be specified.
+
+The class uses the `PIL` library for image manipulation and the `numpy` library for array operations. It also imports a `segmentor` module which is not defined in the given code.
