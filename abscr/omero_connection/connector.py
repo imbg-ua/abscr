@@ -174,7 +174,7 @@ class OmeroClient:
         if text and len(text) > 0:
             shape.setTextValue(omero.rtypes.rstring(text))
         shape.points = omero.rtypes.rstring(
-            ", ".join((f"{int(p[0])},{int(p[1])}" for p in polygon)))
+            " ".join((f"{int(p[0])},{int(p[1])}" for p in polygon)))
         return shape
 
     def register_shape_to_roi(self, image, polygon, roi=None, z=0, t=0, c=0, text=None):
